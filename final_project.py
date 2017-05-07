@@ -374,7 +374,7 @@ def editItem(category_id, item_id):
     if 'username' not in login_session:
         return redirect('/login')
     editedItem = session.query(Item).filter_by(id=item_id).one()
-    category = session.query(category).filter_by(id=category_id).one()
+    category = session.query(Category).filter_by(id=category_id).one()
     if login_session['user_id'] != category.user_id:
         return "<script>function myFunction() {alert('You are not authorized to edit items to this category. Please create your own category in order to edit items.');}</script><body onload='myFunction()''>"
     if request.method == 'POST':
@@ -384,12 +384,10 @@ def editItem(category_id, item_id):
             editedItem.description = request.form['description']
         if request.form['price']:
             editedItem.price = request.form['price']
-        if request.form['course']:
-            editedItem.course = request.form['course']
         session.add(editedItem)
         session.commit()
         flash('Item Successfully Edited')
-        return redirect(url_for('showItem', category_id=category_id))
+        return redirect(url_for('showItems', category_id=category_id))
     else:
         return render_template('edititem.html', category_id=category_id, item_id=item_id, item=editedItem)
 
@@ -399,7 +397,7 @@ def editItem(category_id, item_id):
 def deleteItem(category_id, item_id):
     if 'username' not in login_session:
         return redirect('/login')
-    category = session.query(category).filter_by(id=category_id).one()
+    category = session.query(Category).filter_by(id=category_id).one()
     itemToDelete = session.query(Item).filter_by(id=item_id).one()
     if login_session['user_id'] != category.user_id:
         return "<script>function myFunction() {alert('You are not authorized to delete items in this category. Please create your own category in order to delete items.');}</script><body onload='myFunction()''>"
@@ -407,9 +405,9 @@ def deleteItem(category_id, item_id):
         session.delete(itemToDelete)
         session.commit()
         flash('Item Successfully Deleted')
-        return redirect(url_for('showItem', category_id=category_id))
+        return redirect(url_for('showItems', category_id=category_id))
     else:
-        return render_template('deleteitem.html', item=itemToDelete)
+        return render_template('deleteitem.html', category_id=category_id, item_id=item_id, item=itemToDelete)
 
 
 # Disconnect based on provider
