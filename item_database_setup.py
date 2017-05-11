@@ -20,7 +20,8 @@ class User(Base):
         return {
             'name': self.name,
             'id': self.id,
-            'email': self.email
+            'email': self.email,
+            'picture': self.picture
         }
 
 class Category(Base):
@@ -37,6 +38,8 @@ class Category(Base):
         return {
             'name': self.name,
             'id': self.id,
+            'user_id': self.user_id,
+            'user': self.user
         }
 
 
@@ -47,7 +50,6 @@ class Item(Base):
     id = Column(Integer, primary_key=True)
     description = Column(String(250))
     price = Column(String(8))
-    course = Column(String(250))
     category_id = Column(Integer, ForeignKey('category.id'))
     category = relationship(Category)
     user_id = Column(Integer, ForeignKey('user.id'))
